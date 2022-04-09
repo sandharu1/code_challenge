@@ -7,7 +7,7 @@ trait UnitConversionTrait
 
     public function celsiusToFahrenheit($value)
     {
-        $fahrenheit = (9 / 5) * ($value + 32);
+        $fahrenheit = ($value * 1.8) + 32;
         return $fahrenheit;
     }
 }
