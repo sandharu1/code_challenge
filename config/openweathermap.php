@@ -2,6 +2,18 @@
 
 return [
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | API Base URL - Open Weather Map
+    |--------------------------------------------------------------------------
+    |
+    | This URL uses as a base URL for Open Weather Map API
+    |
+    */
+
+    'api_baseurl' => env('OWM_BASE_URL', ''),
+
     /*
     |--------------------------------------------------------------------------
     | API KEY - Open Weather Map
@@ -23,14 +35,14 @@ return [
     */
 
     'cities' => [
-
-        'colombo' => [
+        [
+            'slug' => 'colombo',
             'name' => 'Colombo',
             'lat' => '6.927079',
             'lon' => '79.861244'
         ],
-
-        'melbourne' => [
+        [
+            'slug' => 'melbourne',
             'name' => 'Melbourne',
             'lat' => '-37.840935',
             'lon' => '144.946457'
