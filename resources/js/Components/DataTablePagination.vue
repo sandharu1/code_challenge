@@ -3,7 +3,6 @@
     <li v-if="pagination.current_page > 1">
       <a
         class="block hover:text-white hover:bg-blue-900 text-blue border-r border-grey-light px-3 py-2"
-        href="#"
         @click.prevent="change(pagination.current_page - 1)"
       >
         Previous
@@ -17,7 +16,6 @@
             : 'hover:text-white hover:bg-blue-900 text-blue border-r border-grey-light',
           'block px-3 py-2',
         ]"
-        href="#"
         @click.stop="change(page)"
       >
         {{ page }}
@@ -26,7 +24,6 @@
     <li v-if="pagination.current_page < pagination.last_page">
       <a
         class="block hover:text-white hover:bg-blue-900 text-blue px-3 py-2"
-        href="#"
         @click.prevent="change(pagination.current_page + 1)"
       >
         Next

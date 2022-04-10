@@ -23,9 +23,14 @@
       </div>
     </div>
     <div class="row-auto">
-      <div class="grid grid-flow-col auto-cols-max gap-4">
-        <div v-for="(city, index) in cities" :key="index">
-          <table class="shadow-lg bg-white border-collapse table-auto md:table-fixed">
+      <!-- Two columns -->
+      <div class="flex flex-wrap lg:flex-row">
+        <div
+          v-for="(city, index) in cities"
+          :key="index"
+          class="w-full sm:w-1/2 md:w-1/2 lg:w-1/2 xl:w-1/2 mb-4"
+        >
+          <table class="shadow-lg bg-white border-collapse table-auto">
             <tr>
               <th class="bg-blue-100 border text-left px-8 py-4">{{ city.name }}</th>
               <th class="bg-blue-100 border text-left px-8 py-4"></th>
@@ -43,6 +48,7 @@
       </div>
     </div>
   </div>
+
   <div class="row-auto">
     <div class="flex flex-row-reverse space-x-4 space-x-reverse my-4">
       <div>

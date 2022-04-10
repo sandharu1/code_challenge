@@ -16,7 +16,7 @@ class CityTempController extends Controller
             $cityTempData = CityTemperature::where('user_id', auth()->user()->id)
                 ->where('city_slug', $request->city_slug)
                 ->orderBy($request->sort_by, 'DESC')
-                ->paginate(2);
+                ->paginate(3);
 
             return response()->json(new CityTempCollection($cityTempData));
         } catch (\Throwable $th) {
