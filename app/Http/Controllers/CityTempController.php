@@ -22,7 +22,7 @@ class CityTempController extends Controller
         } catch (\Throwable $th) {
             // throw $th;
             return response()->json([
-                'status' => 'success',
+                'status' => 'error',
                 'message' => 'Something went wrong!'
             ], 561);
         }
@@ -34,13 +34,13 @@ class CityTempController extends Controller
             $cities = config('openweathermap.cities');
 
             return response()->json([
-                'message' => 'success',
+                'status' => 'success',
                 'data' => $cities,
             ]);
         } catch (\Throwable $th) {
             // throw $th;
             return response()->json([
-                'status' => 'success',
+                'status' => 'error',
                 'message' => 'Something went wrong!'
             ], 561);
         }

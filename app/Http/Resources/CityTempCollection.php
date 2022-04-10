@@ -15,6 +15,7 @@ class CityTempCollection extends ResourceCollection
     public function toArray($request)
     {
         return [
+            'status' => 'success',
             'message' => 'Successfuly Fetched!',
             'cityTempData' => $this->items(),
             'pagination' => [
