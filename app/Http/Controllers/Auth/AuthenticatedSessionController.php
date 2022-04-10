@@ -73,6 +73,10 @@ class AuthenticatedSessionController extends Controller
     protected function authenticated(Request $request, $user)
     {
         //call logged-in event
-        LoggedIn::dispatch($user);
+        try {
+            LoggedIn::dispatch($user);
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
     }
 }
