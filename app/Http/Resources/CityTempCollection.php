@@ -1,14 +1,13 @@
 <?php
 
-namespace App\Api\V1\Resource;
+namespace App\Http\Resources;
 
-use Carbon\Carbon;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class CityTemperature extends JsonResource
+class CityTempCollection extends ResourceCollection
 {
     /**
-     * Transform the resource into an array.
+     * Transform the resource collection into an array.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
@@ -17,12 +16,7 @@ class CityTemperature extends JsonResource
     {
         return [
             'message' => 'Successfuly Fetched!',
-            'cityTempData' => [
-                'id' => $this->collection->id,
-                'temp_c' => $this->collection->temp_c,
-                'temp_f' => $this->collection->temp_f,
-                'created_at' => Carbon::parse($this->created_at)->format("M, d F Y, g:i a")
-            ],
+            'cityTempData' => $this->items(),
             'pagination' => [
                 'total' => $this->total(),
                 'per_page' => $this->perPage(),
@@ -31,9 +25,6 @@ class CityTemperature extends JsonResource
                 'from' => $this->firstItem(),
                 'to' => $this->lastItem(),
             ]
-
-            //Wed, 10 July 2022, 16:00pm
-            //M, d F Y, g:i a
         ];
     }
 }

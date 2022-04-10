@@ -24,10 +24,17 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('test_api', 'TestController@testApi');
+
+Route::middleware(['auth', 'verified'])->group(function () {
+
+    Route::get('/dashboard', function () {
+        return Inertia::render('Dashboard');
+    })->middleware(['auth', 'verified'])->name('dashboard');
+
+    Route::get('fetch_city_temperatures', 'CityTempController@getCityTemperatures');
+
+    Route::get('fetch_cities', 'CityTempController@getCities');
+});
 
 require __DIR__ . '/auth.php';

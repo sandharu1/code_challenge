@@ -1,91 +1,127 @@
 <template>
   <div class="md:container md:mx-auto">
     <div class="row-auto">
-      <div class="grid grid-flow-col auto-cols-max gap-4">
+      <div class="flex flex-row-reverse space-x-4 space-x-reverse">
         <div>
-          <table class="shadow-lg bg-white border-collapse">
-            <tr>
-              <th class="bg-blue-100 border text-left px-8 py-4">Colombo</th>
-              <th class="bg-blue-100 border text-left px-8 py-4"></th>
-              <th class="bg-blue-100 border text-left px-8 py-4"></th>
-            </tr>
-            <tr v-for="colombo_temp in colombo_temps" :key="colombo_temp.id">
-              <td class="border px-8 py-4">{{ colombo_temp.created_at }}</td>
-              <td class="border px-8 py-4">{{ colombo_temp.temp_c }}</td>
-              <td class="border px-8 py-4">{{ colombo_temp.temp_f }}</td>
-            </tr>
-          </table>
+          <button
+            type="button"
+            class="bg-indigo-500 hover:bg-indigo-700 text-white text-center py-2 px-4 rounded-full my-4"
+            @click="sortTempDataBy('created_at')"
+          >
+            Reset Order
+          </button>
         </div>
         <div>
-          <table class="shadow-lg bg-white border-collapse">
+          <button
+            type="button"
+            class="bg-red-500 hover:bg-red-700 text-white text-center py-2 px-4 rounded-full my-4"
+            @click="sortTempDataBy('temp_c')"
+          >
+            Hottest First
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="row-auto">
+      <div class="grid grid-flow-col auto-cols-max gap-4">
+        <div v-for="(city, index) in cities" :key="index">
+          <table class="shadow-lg bg-white border-collapse table-auto md:table-fixed">
             <tr>
-              <th class="bg-blue-100 border text-left px-8 py-4">Melbourne</th>
+              <th class="bg-blue-100 border text-left px-8 py-4">{{ city.name }}</th>
               <th class="bg-blue-100 border text-left px-8 py-4"></th>
               <th class="bg-blue-100 border text-left px-8 py-4"></th>
             </tr>
-            <tr v-for="melbourne_temp in melbourne_temps" :key="melbourne_temp.id">
-              <td class="border px-8 py-4">{{ melbourne_temp.created_at }}</td>
-              <td class="border px-8 py-4">{{ melbourne_temp.temp_c }}</td>
-              <td class="border px-8 py-4">{{ melbourne_temp.temp_f }}</td>
+            <tr v-for="city_temp in city_temps[city.slug]" :key="city_temp.id">
+              <td class="border px-8 py-4">
+                {{ formatTimestamp(city_temp.created_at) }}
+              </td>
+              <td class="border px-8 py-4">{{ city_temp.temp_c }} &#8451;</td>
+              <td class="border px-8 py-4">{{ city_temp.temp_f }} &#8457;</td>
             </tr>
           </table>
         </div>
       </div>
     </div>
   </div>
-
-  <pagination :pagination="pagination" @paginate="fetchMelbourne" :offset="4" />
+  <div class="row-auto">
+    <div class="flex flex-row-reverse space-x-4 space-x-reverse my-4">
+      <div>
+        <pagination :pagination="pagination" @paginate="paginatedData" :offset="4" />
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
 import Pagination from "@/Components/DataTablePagination.vue";
 import axios from "axios";
-// import { response } from 'express';
+import moment from "moment";
+
 export default {
   data() {
     return {
+      cities: {},
       offset: 4,
       pagination: {},
-      colombo_temps: [],
-      melbourne_temps: [],
+      city_temps: {},
+      sortBy: "created_at",
     };
   },
   components: {
     pagination: Pagination,
   },
+  mounted() {
+    this.fetchCities();
+  },
   methods: {
-    fetchColombo: function () {
+    fetchTempData: function (city_slug, sort_by) {
       let current_page = this.pagination.current_page;
       let pageNum = current_page ? current_page : 1;
 
       axios
         .get(
-          `/api/v1/city_temperatures?city_slug=colombo&sort_by=${sortBy}page=${pageNum}`
+          `/fetch_city_temperatures?city_slug=${city_slug}&sort_by=${sort_by}&page=${pageNum}`
         )
         .then((result) => {
           this.pagination = result.data.pagination;
-          this.colombo_temps = result.data.colombo_temps;
+          this.city_temps[city_slug] = result.data.cityTempData;
         })
         .catch((err) => {
           console.error();
         });
     },
-    fetchColombo: function () {
-      let current_page = this.pagination.current_page;
-      let pageNum = current_page ? current_page : 1;
-
+    fetchCities() {
       axios
-        .get(
-          `/api/v1/city_temperatures?city_slug=melbourne&sort_by=${sortBy}page=${pageNum}`
-        )
+        .get(`/fetch_cities`)
         .then((result) => {
-          this.pagination = result.data.pagination;
-          this.melbourne_temps = result.data.melbourne_temps;
+          this.cities = result.data.data;
+          this.cities.forEach((element) => {
+            this.fetchTempData(element.slug, "created_at");
+          });
         })
         .catch((err) => {
           console.error();
         });
+    },
+    paginatedData: function () {
+      this.cities.forEach((element) => {
+        this.fetchTempData(element.slug, this.sortBy);
+      });
+    },
+    sortTempDataBy: function (sort_by) {
+      // reset pagination
+      this.pagination.current_page = 1;
+      //update sort by value
+      this.sortBy = sort_by;
+      // fetch sorted data by city
+      this.cities.forEach((element) => {
+        this.fetchTempData(element.slug, sort_by);
+      });
+    },
+    formatTimestamp: function (value) {
+      return moment(value).format("ddd, DD MMMM YYYY, h:mm a");
     },
   },
+  created() {},
 };
 </script>
